@@ -59,6 +59,25 @@
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
+        // Function to create a blocky tree in the middle of the map
+        function createBlockyTree() {
+            const trunkHeight = 3;
+            const leavesSize = 2;
+            const trunkGeometry = new THREE.BoxGeometry(1, trunkHeight, 1);
+            const trunkMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+            const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+            trunk.position.set(0, trunkHeight / 2, 0);
+            scene.add(trunk);
+
+            const leavesGeometry = new THREE.BoxGeometry(leavesSize, leavesSize, leavesSize);
+            const leavesMaterial = new THREE.MeshLambertMaterial({ color: 0x00FF00 });
+            const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
+            leaves.position.set(0, trunkHeight + leavesSize / 2, 0);
+            scene.add(leaves);
+        }
+
+        createBlockyTree();
+
         function animate() {
             requestAnimationFrame(animate);
 
