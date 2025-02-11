@@ -41,8 +41,8 @@
         camera.position.y = 1;
         camera.position.z = 5;
 
-        // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false };
+        // Set up the movement and jumping
+        const keys = { w: false, a: false, s: false, d: false, space: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -72,6 +72,13 @@
             renderer.domElement.requestPointerLock();
         });
 
+        // Jump variables
+        let isJumping = false;
+        let velocityY = 0;
+        const gravity = 0.01;
+        const jumpStrength = 0.2;
+        const clock = new THREE.Clock();
+
         function animate() {
             requestAnimationFrame(animate);
 
@@ -80,6 +87,27 @@
             if (keys['s']) camera.translateZ(0.1);
             if (keys['a']) camera.translateX(-0.1);
             if (keys['d']) camera.translateX(0.1);
+
+            if (keys[' ']) {
+                if (!isJumping) {
+                    isJumping = true;
+                    velocityY = jumpStrength;
+                }
+            }
+
+            // Apply gravity and update position
+            if (isJumping) {
+                const delta = clock.getDelta();
+                velocityY -= gravity * delta;
+                camera.position.y += velocityY;
+
+                // Check if we are on the ground
+                if (camera.position.y <= 1) {
+                    camera.position.y = 1;
+                    isJumping = false;
+                    velocityY = 0;
+                }
+            }
 
             renderer.render(scene, camera);
         }
