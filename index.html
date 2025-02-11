@@ -11,6 +11,7 @@
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
@@ -18,6 +19,10 @@
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
+
+        // Create PointerLockControls
+        const controls = new THREE.PointerLockControls(camera, document.body);
+        scene.add(controls.getObject());
 
         // Create a ground plane
         const planeGeometry = new THREE.PlaneGeometry(100, 100);
@@ -39,71 +44,42 @@
 
         // Position the camera
         camera.position.y = 1;
-        camera.position.z = 5;
 
         // Set up the movement and jumping
         const keys = { w: false, a: false, s: false, d: false, space: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
-        // Mouse look variables
-        let isLocked = false;
-        let prevMouseX = 0;
-        let prevMouseY = 0;
-
-        // Pointer lock change event listener
-        document.addEventListener('pointerlockchange', () => {
-            isLocked = document.pointerLockElement === renderer.domElement;
-        });
-
-        // Mouse movement event listener
-        document.addEventListener('mousemove', (event) => {
-            if (isLocked) {
-                const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-                const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-                camera.rotation.y -= movementX * 0.002;
-                camera.rotation.x -= movementY * 0.002;
-                camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
-            }
-        });
-
-        // Request pointer lock on click
-        renderer.domElement.addEventListener('click', () => {
-            renderer.domElement.requestPointerLock();
-        });
-
         // Jump variables
         let isJumping = false;
         let velocityY = 0;
-        const gravity = 0.01;
-        const jumpStrength = 0.2;
-        const clock = new THREE.Clock();
+        const gravity = 0.005;
+        const jumpStrength = 0.15;
 
         function animate() {
             requestAnimationFrame(animate);
 
             // WASD controls
-            if (keys['w']) camera.translateZ(-0.1);
-            if (keys['s']) camera.translateZ(0.1);
-            if (keys['a']) camera.translateX(-0.1);
-            if (keys['d']) camera.translateX(0.1);
+            const delta = 0.1;
+            if (keys['w']) controls.moveForward(delta);
+            if (keys['s']) controls.moveForward(-delta);
+            if (keys['a']) controls.moveRight(-delta);
+            if (keys['d']) controls.moveRight(delta);
 
-            if (keys[' ']) {
-                if (!isJumping) {
-                    isJumping = true;
-                    velocityY = jumpStrength;
-                }
+            // Jumping
+            if (keys[' '] && !isJumping) {
+                isJumping = true;
+                velocityY = jumpStrength;
             }
 
             // Apply gravity and update position
             if (isJumping) {
-                const delta = clock.getDelta();
-                velocityY -= gravity * delta;
-                camera.position.y += velocityY;
+                velocityY -= gravity;
+                controls.getObject().position.y += velocityY;
 
                 // Check if we are on the ground
-                if (camera.position.y <= 1) {
-                    camera.position.y = 1;
+                if (controls.getObject().position.y <= 1) {
+                    controls.getObject().position.y = 1;
                     isJumping = false;
                     velocityY = 0;
                 }
@@ -119,6 +95,20 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Pointer lock change event listener
+        document.addEventListener('pointerlockchange', () => {
+            if (document.pointerLockElement === document.body) {
+                controls.enabled = true;
+            } else {
+                controls.enabled = false;
+            }
+        });
+
+        // Request pointer lock on click
+        document.body.addEventListener('click', () => {
+            document.body.requestPointerLock();
         });
     </script>
 </body>
