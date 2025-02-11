@@ -51,32 +51,29 @@
             scene.add(cube);
         }
 
-        // Position the camera
-        camera.position.y = 1;
-
-        // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false };
-        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
-        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
-
-        // Function to create a blocky tree in the middle of the map
-        function createBlockyTree() {
+        // Function to create a blocky tree at a given position
+        function createBlockyTree(x, z) {
             const trunkHeight = 3;
             const leavesSize = 2;
             const trunkGeometry = new THREE.BoxGeometry(1, trunkHeight, 1);
             const trunkMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
             const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
-            trunk.position.set(0, trunkHeight / 2, 0);
+            trunk.position.set(x, trunkHeight / 2, z);
             scene.add(trunk);
 
             const leavesGeometry = new THREE.BoxGeometry(leavesSize, leavesSize, leavesSize);
             const leavesMaterial = new THREE.MeshLambertMaterial({ color: 0x00FF00 });
             const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
-            leaves.position.set(0, trunkHeight + leavesSize / 2, 0);
+            leaves.position.set(x, trunkHeight + leavesSize / 2, z);
             scene.add(leaves);
         }
 
-        createBlockyTree();
+        // Create multiple blocky trees at random positions
+        for (let i = 0; i < 10; i++) {
+            const x = Math.random() * 20 - 10;
+            const z = Math.random() * 20 - 10;
+            createBlockyTree(x, z);
+        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -113,6 +110,12 @@
         document.body.addEventListener('click', () => {
             document.body.requestPointerLock();
         });
+
+        // Set up the movement
+        const keys = { w: false, a: false, s: false, d: false };
+        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
+        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+
     </script>
 </body>
 </html>
