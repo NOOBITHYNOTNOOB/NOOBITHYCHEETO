@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Blocky World</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Set up the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a ground plane
+        const planeGeometry = new THREE.PlaneGeometry(100, 100);
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = Math.PI / 2;
+        scene.add(plane);
+
+        // Create multiple blocks
+        const blocks = [];
+        for (let i = 0; i < 20; i++) {
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+            blocks.push(cube);
+            scene.add(cube);
+        }
+
+        // Position the camera
+        camera.position.y = 1;
+        camera.position.z = 5;
+
+        // Set up the movement
+        const keys = { w: false, a: false, s: false, d: false };
+        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
+        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // WASD controls
+            if (keys['w']) camera.position.z -= 0.1;
+            if (keys['s']) camera.position.z += 0.1;
+            if (keys['a']) camera.position.x -= 0.1;
+            if (keys['d']) camera.position.x += 0.1;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
