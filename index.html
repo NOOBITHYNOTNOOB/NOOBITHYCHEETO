@@ -11,6 +11,7 @@
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.18.0/dist/cannon-es.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
         // Set up the scene, camera, and renderer
@@ -24,7 +25,19 @@
         const controls = new THREE.PointerLockControls(camera, document.body);
         scene.add(controls.getObject());
 
-        // Create a ground plane
+        // Physics world
+        const world = new CANNON.World();
+        world.gravity.set(0, -9.82, 0);
+
+        // Create a ground plane in physics
+        const groundBody = new CANNON.Body({
+            mass: 0, // mass == 0 makes the body static
+            shape: new CANNON.Plane(),
+        });
+        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+        world.addBody(groundBody);
+
+        // Create a ground plane in three.js
         const planeGeometry = new THREE.PlaneGeometry(100, 100);
         const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -46,7 +59,7 @@
         camera.position.y = 1;
 
         // Set up the movement and jumping
-        const keys = { w: false, a: false, s: false, d: false, space: false };
+        const keys = { w: false, a: false, s: false, d: false, space: false, '1': false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -55,6 +68,24 @@
         let velocityY = 0;
         const gravity = 0.005;
         const jumpStrength = 0.15;
+
+        // Function to create a red block at the cursor position
+        function createRedBlock() {
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.copy(controls.getObject().position);
+            cube.position.y -= 0.5; // Adjust position to be at feet level
+            scene.add(cube);
+
+            const shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+            const body = new CANNON.Body({ mass: 1, shape: shape });
+            body.position.copy(cube.position);
+            world.addBody(body);
+
+            // Synchronize the physics and three.js objects
+            blocks.push({ mesh: cube, body: body });
+        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -84,6 +115,21 @@
                     velocityY = 0;
                 }
             }
+
+            // Create red block on "1" press
+            if (keys['1']) {
+                createRedBlock();
+                keys['1'] = false; // Prevent continuous block creation
+            }
+
+            // Update physics world
+            world.step(1 / 60);
+
+            // Update three.js objects to match physics objects
+            blocks.forEach(obj => {
+                obj.mesh.position.copy(obj.body.position);
+                obj.mesh.quaternion.copy(obj.body.quaternion);
+            });
 
             renderer.render(scene, camera);
         }
