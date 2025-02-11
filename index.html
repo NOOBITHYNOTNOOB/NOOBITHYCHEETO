@@ -59,7 +59,7 @@
         camera.position.y = 1;
 
         // Set up the movement and jumping
-        const keys = { w: false, a: false, s: false, d: false, space: false, '1': false };
+        const keys = { w: false, a: false, s: false, d: false, space: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
