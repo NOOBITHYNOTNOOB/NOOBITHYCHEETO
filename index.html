@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Blocky World</title>
+    <title>3D Blocky Game</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -11,7 +11,6 @@
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.18.0/dist/cannon-es.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
         // Set up the scene, camera, and renderer
@@ -34,56 +33,31 @@
         const controls = new THREE.PointerLockControls(camera, document.body);
         scene.add(controls.getObject());
 
-        // Physics world
-        const world = new CANNON.World();
-        world.gravity.set(0, -9.82, 0);
-
-        // Create a ground plane in physics
-        const groundBody = new CANNON.Body({
-            mass: 0, // mass == 0 makes the body static
-            shape: new CANNON.Plane(),
-        });
-        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-        world.addBody(groundBody);
-
-        // Create a ground plane in three.js
+        // Create a ground plane
         const planeGeometry = new THREE.PlaneGeometry(100, 100);
         const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.rotation.x = Math.PI / 2;
         scene.add(plane);
 
+        // Create multiple blocks
+        const blocks = [];
+        for (let i = 0; i < 20; i++) {
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(Math.random() * 20 - 10, 0.5, Math.random() * 20 - 10);
+            blocks.push(cube);
+            scene.add(cube);
+        }
+
         // Position the camera
         camera.position.y = 1;
 
-        // Set up the movement and jumping
-        const keys = { w: false, a: false, s: false, d: false, space: false, '1': false };
+        // Set up the movement
+        const keys = { w: false, a: false, s: false, d: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
-
-        // Jump variables
-        let isJumping = false;
-        let velocityY = 0;
-        const gravity = 0.005;
-        const jumpStrength = 0.15;
-
-        // Function to create a red block at the cursor position
-        function createRedBlock() {
-            const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-            const cube = new THREE.Mesh(geometry, material);
-            cube.position.copy(controls.getObject().position);
-            cube.position.y -= 0.5; // Adjust position to be at feet level
-            scene.add(cube);
-
-            const shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
-            const body = new CANNON.Body({ mass: 1, shape: shape });
-            body.position.copy(cube.position);
-            world.addBody(body);
-
-            // Synchronize the physics and three.js objects
-            blocks.push({ mesh: cube, body: body });
-        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -94,40 +68,6 @@
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
-
-            // Jumping
-            if (keys[' '] && !isJumping) {
-                isJumping = true;
-                velocityY = jumpStrength;
-            }
-
-            // Apply gravity and update position
-            if (isJumping) {
-                velocityY -= gravity;
-                controls.getObject().position.y += velocityY;
-
-                // Check if we are on the ground
-                if (controls.getObject().position.y <= 1) {
-                    controls.getObject().position.y = 1;
-                    isJumping = false;
-                    velocityY = 0;
-                }
-            }
-
-            // Create red block on "1" press
-            if (keys['1']) {
-                createRedBlock();
-                keys['1'] = false; // Prevent continuous block creation
-            }
-
-            // Update physics world
-            world.step(1 / 60);
-
-            // Update three.js objects to match physics objects
-            blocks.forEach(obj => {
-                obj.mesh.position.copy(obj.body.position);
-                obj.mesh.quaternion.copy(obj.body.quaternion);
-            });
 
             renderer.render(scene, camera);
         }
