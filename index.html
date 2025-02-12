@@ -98,10 +98,12 @@
             scene.add(leaves);
         }
 
-        // Create a single blocky tree at a random position on the ground plane
-        const treeX = Math.random() * 100 - 50;
-        const treeZ = Math.random() * 100 - 50;
-        createBlockyTree(treeX, treeZ);
+        // Create three blocky trees at random positions on the ground plane
+        for (let i = 0; i < 3; i++) {
+            const treeX = Math.random() * 100 - 50;
+            const treeZ = Math.random() * 100 - 50;
+            createBlockyTree(treeX, treeZ);
+        }
 
         // Position the camera
         camera.position.y = 1;
