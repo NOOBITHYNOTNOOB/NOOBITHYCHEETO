@@ -51,13 +51,25 @@
             scene.add(cube);
         }
 
-        // Position the camera
-        camera.position.y = 1;
+        // Function to create a blocky tree at a given position
+        function createBlockyTree(x, z) {
+            const trunkHeight = 3;
+            const leavesSize = 2;
+            const trunkGeometry = new THREE.BoxGeometry(1, trunkHeight, 1);
+            const trunkMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+            const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+            trunk.position.set(x, trunkHeight / 2, z);
+            scene.add(trunk);
 
-        // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false };
-        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
-        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+            const leavesGeometry = new THREE.BoxGeometry(leavesSize, leavesSize, leavesSize);
+            const leavesMaterial = new THREE.MeshLambertMaterial({ color: 0x00FF00 });
+            const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
+            leaves.position.set(x, trunkHeight + leavesSize / 2, z);
+            scene.add(leaves);
+        }
+
+        // Create a single blocky tree in the middle of the map
+        createBlockyTree(0, 0);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -94,6 +106,12 @@
         document.body.addEventListener('click', () => {
             document.body.requestPointerLock();
         });
+
+        // Set up the movement
+        const keys = { w: false, a: false, s: false, d: false };
+        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
+        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+
     </script>
 </body>
 </html>
