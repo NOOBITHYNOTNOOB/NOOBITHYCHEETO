@@ -68,12 +68,8 @@
             scene.add(leaves);
         }
 
-        // Create multiple blocky trees at random positions
-        for (let i = 0; i < 10; i++) {
-            const x = Math.random() * 20 - 10;
-            const z = Math.random() * 20 - 10;
-            createBlockyTree(x, z);
-        }
+        // Create a single blocky tree in the middle of the map
+        createBlockyTree(0, 0);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -114,8 +110,4 @@
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
-        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
-
-    </script>
-</body>
-</html>
+        document.addEventListener('keyup', ▋
