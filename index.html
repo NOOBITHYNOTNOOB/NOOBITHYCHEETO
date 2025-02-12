@@ -51,6 +51,14 @@
             scene.add(cube);
         }
 
+        // Position the camera
+        camera.position.y = 1;
+
+        // Set up the movement
+        const keys = { w: false, a: false, s: false, d: false };
+        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
+        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+
         function animate() {
             requestAnimationFrame(animate);
 
@@ -86,12 +94,6 @@
         document.body.addEventListener('click', () => {
             document.body.requestPointerLock();
         });
-
-        // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false };
-        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
-        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
-
     </script>
 </body>
 </html>
