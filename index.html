@@ -20,7 +20,7 @@
         #crosshair:before, #crosshair:after {
             content: '';
             position: absolute;
-            background: rgb(255, 255, 255);
+            background: white;
         }
         #crosshair:before {
             left: 50%;
@@ -63,9 +63,9 @@
         const controls = new THREE.PointerLockControls(camera, document.body);
         scene.add(controls.getObject());
 
-        // Create a ground plane
+        // Create a ground plane with green color
         const planeGeometry = new THREE.PlaneGeometry(100, 100);
-        const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
+        const planeMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.rotation.x = Math.PI / 2;
         scene.add(plane);
@@ -125,6 +125,4 @@
             document.body.requestPointerLock();
         });
 
-    </script>
-</body>
-</html>
+    ▋
