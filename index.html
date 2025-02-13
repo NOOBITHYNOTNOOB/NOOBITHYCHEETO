@@ -152,6 +152,10 @@
                 reflectivity: 0.5
             });
 
+            const bottomMaterial = new THREE.MeshLambertMaterial({
+                color: 0x8B4513 // Brown color for the bottom
+            });
+
             for (let i = 0; i < 10; i++) {
                 const size = Math.random() * 2 + 1; // Random size between 1 and 3
                 const lakeGeometry = new THREE.BoxGeometry(size, 1, size); // Making the lake deeper
@@ -174,6 +178,13 @@
                 reflector.position.set(lake.position.x, lake.position.y + 0.55, lake.position.z);
                 reflector.rotateX(-Math.PI / 2);
                 scene.add(reflector);
+
+                // Create the bottom of the lake
+                const bottomGeometry = new THREE.PlaneGeometry(size, size);
+                const bottom = new THREE.Mesh(bottomGeometry, bottomMaterial);
+                bottom.rotation.x = -Math.PI / 2;
+                bottom.position.set(lake.position.x, lake.position.y - 0.5, lake.position.z);
+                scene.add(bottom);
 
                 scene.add(lake);
             }
