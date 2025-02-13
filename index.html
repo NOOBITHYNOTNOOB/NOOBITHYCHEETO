@@ -131,7 +131,7 @@
                 const leavesHeight = 1.0;
                 const leavesGeometry = new THREE.BoxGeometry(leavesSize, leavesHeight, leavesSize);
                 const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
-                leaves.position.set(x, trunkHeight - (i+1), z);
+                leaves.position.set(x, trunkHeight - (i * 1.5 + 0.5), z);
                 scene.add(leaves);
             }
         }
