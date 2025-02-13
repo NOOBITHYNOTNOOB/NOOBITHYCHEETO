@@ -132,9 +132,11 @@
             scene.add(leaves);
         }
 
-        // Function to create a lake at a given position
+        // Function to create a lake at a given position with random size
         function createLake(x, z) {
-            const lakeGeometry = new THREE.PlaneGeometry(10, 10);
+            const lakeWidth = Math.random() * 8 + 2; // Random width between 2 and 10
+            const lakeHeight = Math.random() * 8 + 2; // Random height between 2 and 10
+            const lakeGeometry = new THREE.PlaneGeometry(lakeWidth, lakeHeight);
             const lakeMaterial = new THREE.MeshLambertMaterial({ color: 0x1E90FF, side: THREE.DoubleSide });
             const lake = new THREE.Mesh(lakeGeometry, lakeMaterial);
             lake.rotation.x = Math.PI / 2;
