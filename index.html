@@ -61,6 +61,13 @@
         const ambientLight = new THREE.AmbientLight(0x404040);
         scene.add(ambientLight);
 
+        // Add a sun to the scene
+        const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
+        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
+        const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+        sun.position.set(50, 50, -50);
+        scene.add(sun);
+
         // Create PointerLockControls
         const controls = new THREE.PointerLockControls(camera, document.body);
         scene.add(controls.getObject());
@@ -136,7 +143,12 @@
 
         // Function to create a lake at a given position with random blocky shape
         function createLake(x, z) {
-            const lakeMaterial = new THREE.MeshLambertMaterial({ color: 0x1E90FF });
+            const lakeMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x1E90FF, 
+                transparent: true, 
+                opacity: 0.5, 
+                shininess: 100 
+            });
 
             for (let i = 0; i < 10; i++) {
                 const size = Math.random() * 2 + 1; // Random size between 1 and 3
