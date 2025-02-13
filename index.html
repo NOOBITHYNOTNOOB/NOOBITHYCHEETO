@@ -115,6 +115,23 @@
             }
         }
 
+        // Function to create a maple tree at a given position
+        function createMapleTree(x, z) {
+            const trunkHeight = 3;
+            const leavesSize = 2;
+            const trunkGeometry = new THREE.BoxGeometry(1, trunkHeight, 1);
+            const trunkMaterial = new THREE.MeshLambertMaterial({ color: 0x5A2D0C }); // Darker wood color
+            const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+            trunk.position.set(x, trunkHeight / 2, z);
+            scene.add(trunk);
+
+            const leavesGeometry = new THREE.BoxGeometry(leavesSize, leavesSize, leavesSize);
+            const leavesMaterial = new THREE.MeshLambertMaterial({ color: 0xFF8C00 }); // Orange leaves color
+            const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
+            leaves.position.set(x, trunkHeight + leavesSize / 2, z);
+            scene.add(leaves);
+        }
+
         // Create ten blocky trees at random positions on the ground plane
         for (let i = 0; i < 10; i++) {
             const treeX = Math.random() * 100 - 50;
@@ -127,6 +144,13 @@
             const bushX = Math.random() * 100 - 50;
             const bushZ = Math.random() * 100 - 50;
             createBush(bushX, bushZ);
+        }
+
+        // Create ten maple trees at random positions on the ground plane
+        for (let i = 0; i < 10; i++) {
+            const mapleTreeX = Math.random() * 100 - 50;
+            const mapleTreeZ = Math.random() * 100 - 50;
+            createMapleTree(mapleTreeX, mapleTreeZ);
         }
 
         // Position the camera
