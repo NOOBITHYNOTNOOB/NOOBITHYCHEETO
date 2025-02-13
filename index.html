@@ -98,11 +98,28 @@
             scene.add(leaves);
         }
 
+        // Function to create a bush at a given position
+        function createBush(x, z) {
+            const bushSize = 1;
+            const bushGeometry = new THREE.BoxGeometry(bushSize, bushSize, bushSize);
+            const bushMaterial = new THREE.MeshLambertMaterial({ color: 0x228B22 });
+            const bush = new THREE.Mesh(bushGeometry, bushMaterial);
+            bush.position.set(x, bushSize / 2, z);
+            scene.add(bush);
+        }
+
         // Create ten blocky trees at random positions on the ground plane
         for (let i = 0; i < 10; i++) {
             const treeX = Math.random() * 100 - 50;
             const treeZ = Math.random() * 100 - 50;
             createBlockyTree(treeX, treeZ);
+        }
+
+        // Create twenty bushes at random positions on the ground plane
+        for (let i = 0; i < 20; i++) {
+            const bushX = Math.random() * 100 - 50;
+            const bushZ = Math.random() * 100 - 50;
+            createBush(bushX, bushZ);
         }
 
         // Position the camera
