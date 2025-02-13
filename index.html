@@ -45,6 +45,8 @@
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Sky blue color
+
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -149,6 +151,23 @@
             }
         }
 
+        // Function to create a rock at a given position
+        function createRock(x, z) {
+            const rockSize = 0.5;
+            const rockMaterial = new THREE.MeshLambertMaterial({ color: 0x808080 });
+
+            for (let i = 0; i < 10; i++) {
+                const rockGeometry = new THREE.BoxGeometry(rockSize, rockSize, rockSize);
+                const rock = new THREE.Mesh(rockGeometry, rockMaterial);
+                rock.position.set(
+                    x + Math.random() * rockSize - rockSize / 2, 
+                    rockSize / 2 + Math.random() * rockSize / 2, 
+                    z + Math.random() * rockSize - rockSize / 2
+                );
+                scene.add(rock);
+            }
+        }
+
         // Create ten blocky trees at random positions on the ground plane
         for (let i = 0; i < 10; i++) {
             const treeX = Math.random() * 100 - 50;
@@ -175,6 +194,13 @@
             const lakeX = Math.random() * 100 - 50;
             const lakeZ = Math.random() * 100 - 50;
             createLake(lakeX, lakeZ);
+        }
+
+        // Create twenty rocks at random positions on the ground plane
+        for (let i = 0; i < 20; i++) {
+            const rockX = Math.random() * 100 - 50;
+            const rockZ = Math.random() * 100 - 50;
+            createRock(rockX, rockZ);
         }
 
         // Position the camera
