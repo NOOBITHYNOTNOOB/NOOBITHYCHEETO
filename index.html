@@ -132,25 +132,19 @@
             scene.add(leaves);
         }
 
-        // Function to create a lake at a given position with random shape
+        // Function to create a lake at a given position with random blocky shape
         function createLake(x, z) {
-            const maxParts = 5; // Maximum number of parts to create the lake
-            const minSize = 2; // Minimum size for each part
-            const maxSize = 6; // Maximum size for each part
-            const lakeMaterial = new THREE.MeshLambertMaterial({ color: 0x1E90FF, side: THREE.DoubleSide });
+            const lakeMaterial = new THREE.MeshLambertMaterial({ color: 0x1E90FF });
 
-            for (let i = 0; i < maxParts; i++) {
-                const width = Math.random() * (maxSize - minSize) + minSize;
-                const height = Math.random() * (maxSize - minSize) + minSize;
-                const lakeGeometry = new THREE.PlaneGeometry(width, height);
+            for (let i = 0; i < 10; i++) {
+                const size = Math.random() * 2 + 1; // Random size between 1 and 3
+                const lakeGeometry = new THREE.BoxGeometry(size, 0.1, size);
                 const lake = new THREE.Mesh(lakeGeometry, lakeMaterial);
-                lake.rotation.x = Math.PI / 2;
                 lake.position.set(
-                    x + Math.random() * width - width / 2,
-                    0.01,
-                    z + Math.random() * height - height / 2
+                    x + Math.random() * 10 - 5,
+                    0.05,
+                    z + Math.random() * 10 - 5
                 );
-                lake.rotation.z = Math.random() * Math.PI * 2; // Random rotation for each part
                 scene.add(lake);
             }
         }
