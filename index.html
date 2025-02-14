@@ -231,7 +231,7 @@
             requestAnimationFrame(animate);
 
             // WASD controls
-            const delta = 0.1;
+            const delta = 0.2; // Increased speed to 0.2 to make the player walk 2 times faster
             if (keys['w']) controls.moveForward(delta);
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
