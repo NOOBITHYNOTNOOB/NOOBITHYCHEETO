@@ -158,57 +158,6 @@
             }
         }
 
-        // Function to create a blocky human
-        function createBlockyHuman() {
-            const human = new THREE.Group();
-
-            // Create body parts
-            const bodyGeometry = new THREE.BoxGeometry(1, 2, 0.5);
-            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
-            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-            body.position.set(0, 1, 0);
-            human.add(body);
-
-            const headGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75);
-            const headMaterial = new THREE.MeshLambertMaterial({ color: 0xFFDAB9 });
-            const head = new THREE.Mesh(headGeometry, headMaterial);
-            head.position.set(0, 2.375, 0);
-            human.add(head);
-
-            const armGeometry = new THREE.BoxGeometry(0.25, 1.5, 0.25);
-            const armMaterial = new THREE.MeshLambertMaterial({ color: 0xFFDAB9 });
-            const leftArm = new THREE.Mesh(armGeometry, armMaterial);
-            leftArm.position.set(-0.625, 1.25, 0);
-            human.add(leftArm);
-
-            const rightArm = new THREE.Mesh(armGeometry, armMaterial);
-            rightArm.position.set(0.625, 1.25, 0);
-            human.add(rightArm);
-
-            const legGeometry = new THREE.BoxGeometry(0.25, 1.5, 0.25);
-            const legMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
-            const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
-            leftLeg.position.set(-0.25, 0.25, 0);
-            human.add(leftLeg);
-
-            const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
-            rightLeg.position.set(0.25, 0.25, 0);
-            human.add(rightLeg);
-
-            return human;
-        }
-
-        // Add the blocky human to the scene
-        const player = createBlockyHuman();
-        scene.add(player);
-
-        // Position the camera for third-person view initially
-        camera.position.set(0, 5, -10);
-        camera.lookAt(player.position);
-
-        // Position the camera
-        camera.position.y = 1;
-
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false, i: false, o: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
@@ -221,29 +170,24 @@
 
             // WASD controls
             const delta = 0.1;
-            if (keys['w']) player.position.z -= delta;
-            if (keys['s']) player.position.z += delta;
-            if (keys['a']) player.position.x -= delta;
-            if (keys['d']) player.position.x += delta;
+            if (keys['w']) controls.moveForward(delta);
+            if (keys['s']) controls.moveForward(-delta);
+            if (keys['a']) controls.moveRight(-delta);
+            if (keys['d']) controls.moveRight(delta);
 
             // Switch to first person
             if (keys['i']) {
                 thirdPerson = false;
-                camera.position.set(player.position.x, player.position.y + 1.6, player.position.z);
+                camera.position.set(0, 1.6, 0);
                 controls.getObject().position.set(camera.position.x, camera.position.y, camera.position.z);
-                controls.getObject().rotation.set(0, 0, 0);
             }
 
             // Switch to third person
             if (keys['o']) {
                 thirdPerson = true;
-                camera.position.set(player.position.x, player.position.y + 5, player.position.z - 10);
+                camera.position.set(0, 5, -10);
                 controls.getObject().position.set(camera.position.x, camera.position.y - 1.6, camera.position.z + 10);
-                controls.getObject().lookAt(player.position);
-            }
-
-            if (thirdPerson) {
-                camera.lookAt(player.position);
+                controls.getObject().lookAt(camera.position);
             }
 
             renderer.render(scene, camera);
