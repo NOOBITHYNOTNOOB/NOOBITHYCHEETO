@@ -140,7 +140,10 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io();
+
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x87CEEB); // Sky blue color
@@ -372,16 +375,12 @@
         // Handle chat input
         chatInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                const message = chatInput.value.trim();
+                const message = `${username}: ${chatInput.value.trim()}`;
                 if (message) {
-                    const p = document.createElement('p');
-                    p.textContent = `${username}: ${message}`;
-                    chatbox.appendChild(p);
-                    chatbox.style.display = 'block';
-                    chatbox.scrollTop = chatbox.scrollHeight;
+                    socket.emit('chat message', message);
+                    chatInput.value = '';
+                    document.body.requestPointerLock();
                 }
-                chatInput.value = '';
-                document.body.requestPointerLock();
             }
         });
 
@@ -414,24 +413,4 @@
         document.getElementById('left-arrow').addEventListener('touchend', () => keys['a'] = false);
 
         document.getElementById('right-arrow').addEventListener('mousedown', () => keys['d'] = true);
-        document.getElementById('right-arrow').addEventListener('mouseup', () => keys['d'] = false);
-        document.getElementById('right-arrow').addEventListener('touchstart', () => keys['d'] = true);
-        document.getElementById('right-arrow').addEventListener('touchend', () => keys['d'] = false);
-
-        // Mobile chat button
-        document.getElementById('chat-button').addEventListener('click', () => {
-            chatInput.style.display = 'block';
-            chatInput.focus();
-            document.exitPointerLock();
-        });
-
-        // Mobile username button
-        document.getElementById('username-button').addEventListener('click', () => {
-            usernameInput.style.display = 'block';
-            usernameInput.focus();
-            document.exitPointerLock();
-        });
-
-    </script>
-</body>
-</html>
+        document.getElementById('right-arrow').addEventListener('mouseup', () => keys['d
