@@ -74,25 +74,31 @@
             border: none;
             display: none;
         }
-        #joystick {
+        #arrows {
             position: absolute;
             bottom: 50px;
             left: 50px;
-            width: 100px;
-            height: 100px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            touch-action: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        #joystick-handle {
-            position: absolute;
+        .arrow {
             width: 50px;
             height: 50px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            left: 25px;
-            top: 25px;
-            touch-action: none;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 5px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .arrow-horizontal {
+            display: flex;
+            justify-content: space-between;
+            width: 110px;
         }
         #chat-button, #username-button {
             position: absolute;
@@ -119,11 +125,19 @@
     <div id="chatbox"></div>
     <input type="text" id="chat-input" placeholder="Type your message...">
     <input type="text" id="username-input" placeholder="Enter new username...">
-    <div id="joystick">
-        <div id="joystick-handle"></div>
+
+    <div id="arrows">
+        <div class="arrow" id="up-arrow">&#9650;</div>
+        <div class="arrow-horizontal">
+            <div class="arrow" id="left-arrow">&#9664;</div>
+            <div class="arrow" id="right-arrow">&#9654;</div>
+        </div>
+        <div class="arrow" id="down-arrow">&#9660;</div>
     </div>
+
     <div id="chat-button">T</div>
     <div id="username-button">/</div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
@@ -383,45 +397,26 @@
             }
         });
 
-        // Mobile controls for joystick
-        const joystick = document.getElementById('joystick');
-        const joystickHandle = document.getElementById('joystick-handle');
-        let joystickActive = false;
-        let joystickStartX, joystickStartY;
+        // Mobile controls for arrows
+        document.getElementById('up-arrow').addEventListener('mousedown', () => keys['w'] = true);
+        document.getElementById('up-arrow').addEventListener('mouseup', () => keys['w'] = false);
+        document.getElementById('up-arrow').addEventListener('touchstart', () => keys['w'] = true);
+        document.getElementById('up-arrow').addEventListener('touchend', () => keys['w'] = false);
 
-        joystick.addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            joystickActive = true;
-            joystickStartX = event.touches[0].clientX;
-            joystickStartY = event.touches[0].clientY;
-        });
+        document.getElementById('down-arrow').addEventListener('mousedown', () => keys['s'] = true);
+        document.getElementById('down-arrow').addEventListener('mouseup', () => keys['s'] = false);
+        document.getElementById('down-arrow').addEventListener('touchstart', () => keys['s'] = true);
+        document.getElementById('down-arrow').addEventListener('touchend', () => keys['s'] = false);
 
-        joystick.addEventListener('touchmove', (event) => {
-            event.preventDefault();
-            if (joystickActive) {
-                const deltaX = event.touches[0].clientX - joystickStartX;
-                const deltaY = event.touches[0].clientY - joystickStartY;
-                const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50);
-                const angle = Math.atan2(deltaY, deltaX);
+        document.getElementById('left-arrow').addEventListener('mousedown', () => keys['a'] = true);
+        document.getElementById('left-arrow').addEventListener('mouseup', () => keys['a'] = false);
+        document.getElementById('left-arrow').addEventListener('touchstart', () => keys['a'] = true);
+        document.getElementById('left-arrow').addEventListener('touchend', () => keys['a'] = false);
 
-                joystickHandle.style.left = `${50 + Math.cos(angle) * distance}px`;
-                joystickHandle.style.top = `${50 + Math.sin(angle) * distance}px`;
-
-                // Move the player
-                const moveX = Math.cos(angle) * delta * (distance / 50);
-                const moveZ = Math.sin(angle) * delta * (distance / 50);
-
-                controls.moveRight(moveX);
-                controls.moveForward(-moveZ);
-            }
-        });
-
-        joystick.addEventListener('touchend', (event) => {
-            event.preventDefault();
-            joystickActive = false;
-            joystickHandle.style.left = '25px';
-            joystickHandle.style.top = '25px';
-        });
+        document.getElementById('right-arrow').addEventListener('mousedown', () => keys['d'] = true);
+        document.getElementById('right-arrow').addEventListener('mouseup', () => keys['d'] = false);
+        document.getElementById('right-arrow').addEventListener('touchstart', () => keys['d'] = true);
+        document.getElementById('right-arrow').addEventListener('touchend', () => keys['d'] = false);
 
         // Mobile chat button
         document.getElementById('chat-button').addEventListener('click', () => {
