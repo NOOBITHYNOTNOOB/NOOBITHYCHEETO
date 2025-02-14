@@ -141,35 +141,6 @@
             scene.add(leaves);
         }
 
-        // Function to create a lake at a given position with random blocky shape
-        function createLake(x, z) {
-            const lakeMaterial = new THREE.MeshLambertMaterial({ color: 0x1E90FF, transparent: true, opacity: 0.5 });
-
-            const bottomMaterial = new THREE.MeshLambertMaterial({
-                color: 0x8B4513 // Brown color for the bottom
-            });
-
-            for (let i = 0; i < 10; i++) {
-                const size = Math.random() * 2 + 1; // Random size between 1 and 3
-                const lakeGeometry = new THREE.BoxGeometry(size, 1, size); // Making the lake deeper
-                const lake = new THREE.Mesh(lakeGeometry, lakeMaterial);
-                lake.position.set(
-                    x + Math.random() * 10 - 5,
-                    -0.5, // Position it to create the illusion of depth
-                    z + Math.random() * 10 - 5
-                );
-
-                // Create the bottom of the lake
-                const bottomGeometry = new THREE.PlaneGeometry(size, size);
-                const bottom = new THREE.Mesh(bottomGeometry, bottomMaterial);
-                bottom.rotation.x = -Math.PI / 2;
-                bottom.position.set(lake.position.x, lake.position.y - 0.5, lake.position.z);
-                scene.add(bottom);
-
-                scene.add(lake);
-            }
-        }
-
         // Function to create a rock at a given position
         function createRock(x, z) {
             const rockSize = 0.5;
@@ -206,13 +177,6 @@
             const mapleTreeX = Math.random() * 100 - 50;
             const mapleTreeZ = Math.random() * 100 - 50;
             createMapleTree(mapleTreeX, mapleTreeZ);
-        }
-
-        // Create five lakes at random positions on the ground plane
-        for (let i = 0; i < 5; i++) {
-            const lakeX = Math.random() * 100 - 50;
-            const lakeZ = Math.random() * 100 - 50;
-            createLake(lakeX, lakeZ);
         }
 
         // Create twenty rocks at random positions on the ground plane
