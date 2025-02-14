@@ -325,22 +325,6 @@
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
 
-            // Open username input
-            if (keys['/']) {
-                usernameInput.style.display = 'block';
-                usernameInput.focus();
-                document.exitPointerLock();
-                keys['/'] = false;
-            }
-
-            // Open chat input
-            if (keys['t']) {
-                chatInput.style.display = 'block';
-                chatInput.focus();
-                document.exitPointerLock();
-                keys['t'] = false;
-            }
-
             renderer.render(scene, camera);
         }
 
@@ -423,8 +407,12 @@
                 joystickHandle.style.left = `${50 + Math.cos(angle) * distance}px`;
                 joystickHandle.style.top = `${50 + Math.sin(angle) * distance}px`;
 
-                controls.getObject().translateX(Math.cos(angle) * delta * (distance / 50));
-                controls.getObject().translateZ(Math.sin(angle) * delta * (distance / 50));
+                // Move the player
+                const moveX = Math.cos(angle) * delta * (distance / 50);
+                const moveZ = Math.sin(angle) * delta * (distance / 50);
+
+                controls.moveRight(moveX);
+                controls.moveForward(-moveZ);
             }
         });
 
