@@ -162,30 +162,26 @@
         function createBlockyHouse(x, z) {
             const house = new THREE.Group();
 
-            // Create house parts with cubes
-            const cubeSize = 1;
-            const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-            const baseMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
-            const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xA52A2A });
-
             // Create base of the house
-            for (let i = -2; i <= 2; i++) {
-                for (let j = -2; j <= 2; j++) {
-                    if (Math.abs(i) === 2 || Math.abs(j) === 2 || j === -1) {
-                        const baseCube = new THREE.Mesh(cubeGeometry, baseMaterial);
-                        baseCube.position.set(x + i, 1, z + j);
-                        house.add(baseCube);
-                    }
-                }
-            }
+            const baseGeometry = new THREE.BoxGeometry(4, 4, 4);
+            const baseMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            base.position.set(x, 2, z);
+            house.add(base);
 
             // Create roof of the house
-            for (let i = -2; i <= 2; i++) {
-                for (let j = -2; j <= 2; j++) {
-                    if (Math.abs(i) + Math.abs(j) <= 2) {
-                        const roofCube = new THREE.Mesh(cubeGeometry, roofMaterial);
-                        roofCube.position.set(x + i, 3, z + j);
-                        house.add(roofCube);
+            const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xD2B48C });
+            const roofSize = 4;
+
+            for (let i = 0; i < roofSize; i++) {
+                for (let j = 0; j < roofSize - i; j++) {
+                    const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
+                    roofCube.position.set(x + j - (roofSize - i - 1) / 2, 4 + i, z + i / 2);
+                    house.add(roofCube);
+                    if (i > 0) {
+                        const oppositeRoofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
+                        oppositeRoofCube.position.set(x + j - (roofSize - i - 1) / 2, 4 + i, z - i / 2);
+                        house.add(oppositeRoofCube);
                     }
                 }
             }
