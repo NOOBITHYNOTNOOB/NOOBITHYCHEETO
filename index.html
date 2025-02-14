@@ -42,7 +42,6 @@
     <div id="crosshair"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/objects/Reflector.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
@@ -142,15 +141,9 @@
             scene.add(leaves);
         }
 
-        // Function to create a reflective lake at a given position with random blocky shape
+        // Function to create a lake at a given position with random blocky shape
         function createLake(x, z) {
-            const lakeMaterial = new THREE.MeshPhongMaterial({ 
-                color: 0x1E90FF, 
-                transparent: true, 
-                opacity: 0.5, 
-                shininess: 50, // Reduced shininess to improve performance
-                reflectivity: 0.25 // Reduced reflectivity to improve performance
-            });
+            const lakeMaterial = new THREE.MeshLambertMaterial({ color: 0x1E90FF, transparent: true, opacity: 0.5 });
 
             const bottomMaterial = new THREE.MeshLambertMaterial({
                 color: 0x8B4513 // Brown color for the bottom
@@ -165,19 +158,6 @@
                     -0.5, // Position it to create the illusion of depth
                     z + Math.random() * 10 - 5
                 );
-
-                // Add a reflective surface on top of the lake
-                const planeGeometry = new THREE.PlaneGeometry(size, size);
-                const reflector = new THREE.Reflector(planeGeometry, {
-                    clipBias: 0.003,
-                    textureWidth: window.innerWidth * window.devicePixelRatio,
-                    textureHeight: window.innerHeight * window.devicePixelRatio,
-                    color: 0x777777,
-                    recursion: 1
-                });
-                reflector.position.set(lake.position.x, lake.position.y + 0.55, lake.position.z);
-                reflector.rotateX(-Math.PI / 2);
-                scene.add(reflector);
 
                 // Create the bottom of the lake
                 const bottomGeometry = new THREE.PlaneGeometry(size, size);
