@@ -169,19 +169,17 @@
             base.position.set(x, 2, z);
             house.add(base);
 
-            // Create roof of the house
+            // Create cubic pyramid roof of the house
             const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xD2B48C });
-            const roofSize = 4;
+            const roofHeight = 2;
 
-            for (let i = 0; i < roofSize; i++) {
-                for (let j = 0; j < roofSize - i; j++) {
-                    const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
-                    roofCube.position.set(x + j - (roofSize - i - 1) / 2, 4 + i, z + i / 2);
-                    house.add(roofCube);
-                    if (i > 0) {
-                        const oppositeRoofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
-                        oppositeRoofCube.position.set(x + j - (roofSize - i - 1) / 2, 4 + i, z - i / 2);
-                        house.add(oppositeRoofCube);
+            for (let i = 0; i < roofHeight; i++) {
+                const size = 4 - i * 2;
+                for (let j = 0; j < size; j++) {
+                    for (let k = 0; k < size; k++) {
+                        const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
+                        roofCube.position.set(x + j - (size / 2 - 0.5), 4 + i, z + k - (size / 2 - 0.5));
+                        house.add(roofCube);
                     }
                 }
             }
