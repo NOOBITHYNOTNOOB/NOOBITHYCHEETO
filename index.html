@@ -162,18 +162,33 @@
         function createBlockyHouse(x, z) {
             const house = new THREE.Group();
 
-            // Create house parts
-            const baseGeometry = new THREE.BoxGeometry(4, 2, 4);
+            // Create house parts with cubes
+            const cubeSize = 1;
+            const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             const baseMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
-            const base = new THREE.Mesh(baseGeometry, baseMaterial);
-            base.position.set(x, 1, z);
-            house.add(base);
-
-            const roofGeometry = new THREE.ConeGeometry(4, 2, 4);
             const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xA52A2A });
-            const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-            roof.position.set(x, 3, z);
-            house.add(roof);
+
+            // Create base of the house
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
+                    if (Math.abs(i) === 2 || Math.abs(j) === 2 || j === -1) {
+                        const baseCube = new THREE.Mesh(cubeGeometry, baseMaterial);
+                        baseCube.position.set(x + i, 1, z + j);
+                        house.add(baseCube);
+                    }
+                }
+            }
+
+            // Create roof of the house
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
+                    if (Math.abs(i) + Math.abs(j) <= 2) {
+                        const roofCube = new THREE.Mesh(cubeGeometry, roofMaterial);
+                        roofCube.position.set(x + i, 3, z + j);
+                        house.add(roofCube);
+                    }
+                }
+            }
 
             scene.add(house);
         }
