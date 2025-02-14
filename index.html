@@ -158,6 +158,34 @@
             }
         }
 
+        // Create ten blocky trees at random positions on the ground plane
+        for (let i = 0; i < 10; i++) {
+            const treeX = Math.random() * 100 - 50;
+            const treeZ = Math.random() * 100 - 50;
+            createBlockyTree(treeX, treeZ);
+        }
+
+        // Create twenty bushes at random positions on the ground plane
+        for (let i = 0; i < 20; i++) {
+            const bushX = Math.random() * 100 - 50;
+            const bushZ = Math.random() * 100 - 50;
+            createBush(bushX, bushZ);
+        }
+
+        // Create ten maple trees at random positions on the ground plane
+        for (let i = 0; i < 10; i++) {
+            const mapleTreeX = Math.random() * 100 - 50;
+            const mapleTreeZ = Math.random() * 100 - 50;
+            createMapleTree(mapleTreeX, mapleTreeZ);
+        }
+
+        // Create twenty rocks at random positions on the ground plane
+        for (let i = 0; i < 20; i++) {
+            const rockX = Math.random() * 100 - 50;
+            const rockZ = Math.random() * 100 - 50;
+            createRock(rockX, rockZ);
+        }
+
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false, i: false, o: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
