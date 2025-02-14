@@ -259,25 +259,34 @@
 
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false, space: false };
-        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
-        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+        let isJumping = false;
+
+        document.addEventListener('keydown', (event) => { 
+            if (keys[event.key] !== undefined) keys[event.key] = true; 
+        });
+
+        document.addEventListener('keyup', (event) => { 
+            if (keys[event.key] !== undefined) keys[event.key] = false; 
+        });
 
         function animate() {
             requestAnimationFrame(animate);
 
             // WASD controls
-            const delta = 0.2; // Increased speed to 0.2 to make the player walk 2 times faster
+            const delta = 0.2; // Movement speed
             if (keys['w']) controls.moveForward(delta);
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
 
             // Spacebar controls
-            if (keys[' ']) {
+            if (keys[' '] && !isJumping) {
+                isJumping = true;
                 camera.position.y += 100;
                 setTimeout(() => {
                     camera.position.y -= 100;
-                }, 100);
+                    isJumping = false;
+                }, 1000);
             }
 
             renderer.render(scene, camera);
