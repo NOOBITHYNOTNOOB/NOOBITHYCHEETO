@@ -190,9 +190,11 @@
         camera.position.y = 1;
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false };
+        const keys = { w: false, a: false, s: false, d: false, i: false, o: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+
+        let thirdPerson = false;
 
         function animate() {
             requestAnimationFrame(animate);
@@ -203,6 +205,21 @@
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
+
+            // Switch to first person
+            if (keys['i']) {
+                thirdPerson = false;
+                camera.position.set(0, 1.6, 0);
+                controls.getObject().position.set(camera.position.x, camera.position.y, camera.position.z);
+            }
+
+            // Switch to third person
+            if (keys['o']) {
+                thirdPerson = true;
+                camera.position.set(0, 5, -10);
+                controls.getObject().position.set(camera.position.x, camera.position.y - 1.6, camera.position.z + 10);
+                controls.getObject().lookAt(camera.position);
+            }
 
             renderer.render(scene, camera);
         }
