@@ -74,6 +74,44 @@
             border: none;
             display: none;
         }
+        #joystick {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            touch-action: none;
+        }
+        #joystick-handle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            left: 25px;
+            top: 25px;
+            touch-action: none;
+        }
+        #chat-button, #username-button {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        #username-button {
+            bottom: 110px;
+        }
     </style>
 </head>
 <body>
@@ -81,6 +119,11 @@
     <div id="chatbox"></div>
     <input type="text" id="chat-input" placeholder="Type your message...">
     <input type="text" id="username-input" placeholder="Enter new username...">
+    <div id="joystick">
+        <div id="joystick-handle"></div>
+    </div>
+    <div id="chat-button">T</div>
+    <div id="username-button">/</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
@@ -354,6 +397,56 @@
                 usernameInput.value = '';
                 document.body.requestPointerLock();
             }
+        });
+
+        // Mobile controls for joystick
+        const joystick = document.getElementById('joystick');
+        const joystickHandle = document.getElementById('joystick-handle');
+        let joystickActive = false;
+        let joystickStartX, joystickStartY;
+
+        joystick.addEventListener('touchstart', (event) => {
+            event.preventDefault();
+            joystickActive = true;
+            joystickStartX = event.touches[0].clientX;
+            joystickStartY = event.touches[0].clientY;
+        });
+
+        joystick.addEventListener('touchmove', (event) => {
+            event.preventDefault();
+            if (joystickActive) {
+                const deltaX = event.touches[0].clientX - joystickStartX;
+                const deltaY = event.touches[0].clientY - joystickStartY;
+                const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50);
+                const angle = Math.atan2(deltaY, deltaX);
+
+                joystickHandle.style.left = `${50 + Math.cos(angle) * distance}px`;
+                joystickHandle.style.top = `${50 + Math.sin(angle) * distance}px`;
+
+                controls.getObject().translateX(Math.cos(angle) * delta * (distance / 50));
+                controls.getObject().translateZ(Math.sin(angle) * delta * (distance / 50));
+            }
+        });
+
+        joystick.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            joystickActive = false;
+            joystickHandle.style.left = '25px';
+            joystickHandle.style.top = '25px';
+        });
+
+        // Mobile chat button
+        document.getElementById('chat-button').addEventListener('click', () => {
+            chatInput.style.display = 'block';
+            chatInput.focus();
+            document.exitPointerLock();
+        });
+
+        // Mobile username button
+        document.getElementById('username-button').addEventListener('click', () => {
+            usernameInput.style.display = 'block';
+            usernameInput.focus();
+            document.exitPointerLock();
         });
 
     </script>
