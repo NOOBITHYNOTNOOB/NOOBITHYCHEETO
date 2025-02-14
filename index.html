@@ -158,33 +158,53 @@
             }
         }
 
-        // Create ten blocky trees at random positions on the ground plane
-        for (let i = 0; i < 10; i++) {
-            const treeX = Math.random() * 100 - 50;
-            const treeZ = Math.random() * 100 - 50;
-            createBlockyTree(treeX, treeZ);
+        // Function to create a blocky human
+        function createBlockyHuman() {
+            const human = new THREE.Group();
+
+            // Create body parts
+            const bodyGeometry = new THREE.BoxGeometry(1, 2, 0.5);
+            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.position.set(0, 1, 0);
+            human.add(body);
+
+            const headGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75);
+            const headMaterial = new THREE.MeshLambertMaterial({ color: 0xFFDAB9 });
+            const head = new THREE.Mesh(headGeometry, headMaterial);
+            head.position.set(0, 2.375, 0);
+            human.add(head);
+
+            const armGeometry = new THREE.BoxGeometry(0.25, 1.5, 0.25);
+            const armMaterial = new THREE.MeshLambertMaterial({ color: 0xFFDAB9 });
+            const leftArm = new THREE.Mesh(armGeometry, armMaterial);
+            leftArm.position.set(-0.625, 1.25, 0);
+            human.add(leftArm);
+
+            const rightArm = new THREE.Mesh(armGeometry, armMaterial);
+            rightArm.position.set(0.625, 1.25, 0);
+            human.add(rightArm);
+
+            const legGeometry = new THREE.BoxGeometry(0.25, 1.5, 0.25);
+            const legMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
+            const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+            leftLeg.position.set(-0.25, 0.25, 0);
+            human.add(leftLeg);
+
+            const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
+            rightLeg.position.set(0.25, 0.25, 0);
+            human.add(rightLeg);
+
+            return human;
         }
 
-        // Create twenty bushes at random positions on the ground plane
-        for (let i = 0; i < 20; i++) {
-            const bushX = Math.random() * 100 - 50;
-            const bushZ = Math.random() * 100 - 50;
-            createBush(bushX, bushZ);
-        }
+        // Add the blocky human to the scene
+        const player = createBlockyHuman();
+        scene.add(player);
 
-        // Create ten maple trees at random positions on the ground plane
-        for (let i = 0; i < 10; i++) {
-            const mapleTreeX = Math.random() * 100 - 50;
-            const mapleTreeZ = Math.random() * 100 - 50;
-            createMapleTree(mapleTreeX, mapleTreeZ);
-        }
-
-        // Create twenty rocks at random positions on the ground plane
-        for (let i = 0; i < 20; i++) {
-            const rockX = Math.random() * 100 - 50;
-            const rockZ = Math.random() * 100 - 50;
-            createRock(rockX, rockZ);
-        }
+        // Position the camera for third-person view initially
+        camera.position.set(0, 5, -10);
+        camera.lookAt(player.position);
 
         // Position the camera
         camera.position.y = 1;
@@ -194,31 +214,36 @@
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
-        let thirdPerson = false;
+        let thirdPerson = true;
 
         function animate() {
             requestAnimationFrame(animate);
 
             // WASD controls
             const delta = 0.1;
-            if (keys['w']) controls.moveForward(delta);
-            if (keys['s']) controls.moveForward(-delta);
-            if (keys['a']) controls.moveRight(-delta);
-            if (keys['d']) controls.moveRight(delta);
+            if (keys['w']) player.position.z -= delta;
+            if (keys['s']) player.position.z += delta;
+            if (keys['a']) player.position.x -= delta;
+            if (keys['d']) player.position.x += delta;
 
             // Switch to first person
             if (keys['i']) {
                 thirdPerson = false;
-                camera.position.set(0, 1.6, 0);
+                camera.position.set(player.position.x, player.position.y + 1.6, player.position.z);
                 controls.getObject().position.set(camera.position.x, camera.position.y, camera.position.z);
+                controls.getObject().rotation.set(0, 0, 0);
             }
 
             // Switch to third person
             if (keys['o']) {
                 thirdPerson = true;
-                camera.position.set(0, 5, -10);
+                camera.position.set(player.position.x, player.position.y + 5, player.position.z - 10);
                 controls.getObject().position.set(camera.position.x, camera.position.y - 1.6, camera.position.z + 10);
-                controls.getObject().lookAt(camera.position);
+                controls.getObject().lookAt(player.position);
+            }
+
+            if (thirdPerson) {
+                camera.lookAt(player.position);
             }
 
             renderer.render(scene, camera);
