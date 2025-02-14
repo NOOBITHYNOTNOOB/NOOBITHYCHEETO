@@ -36,44 +36,6 @@
             height: 2px;
             margin-top: -1px;
         }
-        #chatbox {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        #chatbox p {
-            margin: 5px 0;
-        }
-        #chat-input {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            display: none;
-        }
-        #username-input {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            display: none;
-        }
         #arrows {
             position: absolute;
             bottom: 50px;
@@ -100,31 +62,10 @@
             justify-content: space-between;
             width: 110px;
         }
-        #chat-button, #username-button {
-            position: absolute;
-            bottom: 50px;
-            right: 50px;
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        #username-button {
-            bottom: 110px;
-        }
     </style>
 </head>
 <body>
     <div id="crosshair"></div>
-    <div id="chatbox"></div>
-    <input type="text" id="chat-input" placeholder="Type your message...">
-    <input type="text" id="username-input" placeholder="Enter new username...">
 
     <div id="arrows">
         <div class="arrow" id="up-arrow">&#9650;</div>
@@ -134,9 +75,6 @@
         </div>
         <div class="arrow" id="down-arrow">&#9660;</div>
     </div>
-
-    <div id="chat-button">T</div>
-    <div id="username-button">/</div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
@@ -245,7 +183,7 @@
             const rockSize = 0.5;
             const rockMaterial = new THREE.MeshLambertMaterial({ color: 0x808080 });
 
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i++) {
                 const rockGeometry = new THREE.BoxGeometry(rockSize, rockSize, rockSize);
                 const rock = new THREE.Mesh(rockGeometry, rockMaterial);
                 rock.position.set(
@@ -320,14 +258,9 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false };
+        const keys = { w: false, a: false, s: false, d: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
-
-        let username = "Player";
-        const chatbox = document.getElementById('chatbox');
-        const chatInput = document.getElementById('chat-input');
-        const usernameInput = document.getElementById('username-input');
 
         function animate() {
             requestAnimationFrame(animate);
@@ -355,10 +288,6 @@
         document.addEventListener('pointerlockchange', () => {
             if (document.pointerLockElement === document.body) {
                 controls.enabled = true;
-                chatInput.style.display = 'none';
-                usernameInput.style.display = 'none';
-                chatInput.value = '';
-                usernameInput.value = '';
             } else {
                 controls.enabled = false;
             }
@@ -367,34 +296,6 @@
         // Request pointer lock on click
         document.body.addEventListener('click', () => {
             document.body.requestPointerLock();
-        });
-
-        // Handle chat input
-        chatInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const message = chatInput.value.trim();
-                if (message) {
-                    const p = document.createElement('p');
-                    p.textContent = `${username}: ${message}`;
-                    chatbox.appendChild(p);
-                    chatbox.style.display = 'block';
-                    chatbox.scrollTop = chatbox.scrollHeight;
-                }
-                chatInput.value = '';
-                document.body.requestPointerLock();
-            }
-        });
-
-        // Handle username input
-        usernameInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const newUsername = usernameInput.value.trim();
-                if (newUsername) {
-                    username = newUsername;
-                }
-                usernameInput.value = '';
-                document.body.requestPointerLock();
-            }
         });
 
         // Mobile controls for arrows
@@ -417,21 +318,6 @@
         document.getElementById('right-arrow').addEventListener('mouseup', () => keys['d'] = false);
         document.getElementById('right-arrow').addEventListener('touchstart', () => keys['d'] = true);
         document.getElementById('right-arrow').addEventListener('touchend', () => keys['d'] = false);
-
-        // Mobile chat button
-        document.getElementById('chat-button').addEventListener('click', () => {
-            chatInput.style.display = 'block';
-            chatInput.focus();
-            document.exitPointerLock();
-        });
-
-        // Mobile username button
-        document.getElementById('username-button').addEventListener('click', () => {
-            usernameInput.style.display = 'block';
-            usernameInput.focus();
-            document.exitPointerLock();
-        });
-
     </script>
 </body>
 </html>
