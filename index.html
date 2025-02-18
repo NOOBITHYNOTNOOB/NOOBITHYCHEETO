@@ -40,16 +40,12 @@
 </head>
 <body>
     <div id="crosshair"></div>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB); // Sky blue color
-
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 2, 5); // Move the camera position above the ground
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -62,13 +58,6 @@
         // Add an ambient light to the scene
         const ambientLight = new THREE.AmbientLight(0x404040);
         scene.add(ambientLight);
-
-        // Add a sun to the scene
-        const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
-        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
-        const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-        sun.position.set(50, 50, -50);
-        scene.add(sun);
 
         // Create PointerLockControls
         const controls = new THREE.PointerLockControls(camera, document.body);
@@ -143,52 +132,6 @@
             scene.add(leaves);
         }
 
-        // Function to create a rock at a given position
-        function createRock(x, z) {
-            const rockSize = 0.5;
-            const rockMaterial = new THREE.MeshLambertMaterial({ color: 0x808080 });
-
-            for (let i = 0; i++) {
-                const rockGeometry = new THREE.BoxGeometry(rockSize, rockSize, rockSize);
-                const rock = new THREE.Mesh(rockGeometry, rockMaterial);
-                rock.position.set(
-                    x + Math.random() * rockSize - rockSize / 2, 
-                    rockSize / 2 + Math.random() * rockSize / 2, 
-                    z + Math.random() * rockSize - rockSize / 2
-                );
-                scene.add(rock);
-            }
-        }
-
-        // Function to create a blocky house at a given position
-        function createBlockyHouse(x, z) {
-            const house = new THREE.Group();
-
-            // Create base of the house
-            const baseGeometry = new THREE.BoxGeometry(4, 4, 4);
-            const baseMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
-            const base = new THREE.Mesh(baseGeometry, baseMaterial);
-            base.position.set(x, 2, z);
-            house.add(base);
-
-            // Create cubic pyramid roof of the house
-            const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xD2B48C });
-            const roofHeight = 2;
-
-            for (let i = 0; i < roofHeight; i++) {
-                const size = 4 - i * 2;
-                for (let j = 0; j < size; j++) {
-                    for (let k = 0; k < size; k++) {
-                        const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
-                        roofCube.position.set(x + j - (size / 2 - 0.5), 4 + i, z + k - (size / 2 - 0.5));
-                        house.add(roofCube);
-                    }
-                }
-            }
-
-            scene.add(house);
-        }
-
         // Create ten blocky trees at random positions on the ground plane
         for (let i = 0; i < 10; i++) {
             const treeX = Math.random() * 100 - 50;
@@ -210,49 +153,23 @@
             createMapleTree(mapleTreeX, mapleTreeZ);
         }
 
-        // Create twenty rocks at random positions on the ground plane
-        for (let i = 0; i < 20; i++) {
-            const rockX = Math.random() * 100 - 50;
-            const rockZ = Math.random() * 100 - 50;
-            createRock(rockX, rockZ);
-        }
-
-        // Create one blocky house at a random position on the ground plane
-        const houseX = Math.random() * 100 - 50;
-        const houseZ = Math.random() * 100 - 50;
-        createBlockyHouse(houseX, houseZ);
+        // Position the camera
+        camera.position.y = 1;
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, space: false };
-        let isJumping = false;
-
-        document.addEventListener('keydown', (event) => { 
-            if (keys[event.key] !== undefined) keys[event.key] = true; 
-        });
-
-        document.addEventListener('keyup', (event) => { 
-            if (keys[event.key] !== undefined) keys[event.key] = false; 
-        });
+        const keys = { w: false, a: false, s: false, d: false };
+        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
+        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
         function animate() {
             requestAnimationFrame(animate);
 
             // WASD controls
-            const delta = 0.2; // Movement speed
+            const delta = 0.1;
             if (keys['w']) controls.moveForward(delta);
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
-
-            // Spacebar controls
-            if (keys[' '] && !isJumping) {
-                isJumping = true;
-                camera.position.y += 100;
-                setTimeout(() => {
-                    camera.position.y -= 100;
-                    isJumping = false;
-                }, 1000);
-            }
 
             renderer.render(scene, camera);
         }
@@ -279,6 +196,7 @@
         document.body.addEventListener('click', () => {
             document.body.requestPointerLock();
         });
+
     </script>
 </body>
 </html>
