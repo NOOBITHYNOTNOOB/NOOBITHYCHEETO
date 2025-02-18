@@ -188,7 +188,7 @@
             const rockSize = 0.5;
             const rockMaterial = new THREE.MeshLambertMaterial({ color: 0x808080 });
 
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i++) {
                 const rockGeometry = new THREE.BoxGeometry(rockSize, rockSize, rockSize);
                 const rock = new THREE.Mesh(rockGeometry, rockMaterial);
                 rock.position.set(
@@ -263,14 +263,27 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false };
-        document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
-        document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
+        const keys = { w: false, a: false, s: false, d: false, '1': false, '/': false, t: false };
+        document.addEventListener('keydown', (event) => { if (keys[event.key.toLowerCase()] !== undefined) keys[event.key.toLowerCase()] = true; });
+        document.addEventListener('keyup', (event) => { if (keys[event.key.toLowerCase()] !== undefined) keys[event.key.toLowerCase()] = false; });
 
         let username = "Player";
         const chatbox = document.getElementById('chatbox');
         const chatInput = document.getElementById('chat-input');
         const usernameInput = document.getElementById('username-input');
+
+        function createRedBlock() {
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+            const redBlock = new THREE.Mesh(geometry, material);
+
+            // Set the red block 5 units in front of the camera
+            const direction = new THREE.Vector3();
+            camera.getWorldDirection(direction);
+            redBlock.position.copy(camera.position).add(direction.multiplyScalar(5));
+
+            scene.add(redBlock);
+        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -281,6 +294,12 @@
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
+
+            // Create red block when pressing '1'
+            if (keys['1']) {
+                createRedBlock();
+                keys['1'] = false; // Prevent continuous creation
+            }
 
             // Open username input
             if (keys['/']) {
