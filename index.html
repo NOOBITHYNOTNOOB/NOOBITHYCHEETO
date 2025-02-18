@@ -36,10 +36,51 @@
             height: 2px;
             margin-top: -1px;
         }
+        #chatbox {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        #chatbox p {
+            margin: 5px 0;
+        }
+        #chat-input {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            display: none;
+        }
+        #username-input {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div id="crosshair"></div>
+    <div id="chatbox"></div>
+    <input type="text" id="chat-input" placeholder="Type your message...">
+    <input type="text" id="username-input" placeholder="Enter new username...">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
     <script>
@@ -48,6 +89,7 @@
         scene.background = new THREE.Color(0x87CEEB); // Sky blue color
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 5); // Move the camera position above the ground
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -221,11 +263,14 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, i: false, o: false };
+        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
-        let thirdPerson = true;
+        let username = "Player";
+        const chatbox = document.getElementById('chatbox');
+        const chatInput = document.getElementById('chat-input');
+        const usernameInput = document.getElementById('username-input');
 
         function animate() {
             requestAnimationFrame(animate);
@@ -237,19 +282,20 @@
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
 
-            // Switch to first person
-            if (keys['i']) {
-                thirdPerson = false;
-                camera.position.set(0, 1.6, 0);
-                controls.getObject().position.set(camera.position.x, camera.position.y, camera.position.z);
+            // Open username input
+            if (keys['/']) {
+                usernameInput.style.display = 'block';
+                usernameInput.focus();
+                document.exitPointerLock();
+                keys['/'] = false;
             }
 
-            // Switch to third person
-            if (keys['o']) {
-                thirdPerson = true;
-                camera.position.set(0, 5, -10);
-                controls.getObject().position.set(camera.position.x, camera.position.y - 1.6, camera.position.z + 10);
-                controls.getObject().lookAt(camera.position);
+            // Open chat input
+            if (keys['t']) {
+                chatInput.style.display = 'block';
+                chatInput.focus();
+                document.exitPointerLock();
+                keys['t'] = false;
             }
 
             renderer.render(scene, camera);
@@ -268,6 +314,10 @@
         document.addEventListener('pointerlockchange', () => {
             if (document.pointerLockElement === document.body) {
                 controls.enabled = true;
+                chatInput.style.display = 'none';
+                usernameInput.style.display = 'none';
+                chatInput.value = '';
+                usernameInput.value = '';
             } else {
                 controls.enabled = false;
             }
@@ -276,6 +326,34 @@
         // Request pointer lock on click
         document.body.addEventListener('click', () => {
             document.body.requestPointerLock();
+        });
+
+        // Handle chat input
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const message = chatInput.value.trim();
+                if (message) {
+                    const p = document.createElement('p');
+                    p.textContent = `${username}: ${message}`;
+                    chatbox.appendChild(p);
+                    chatbox.style.display = 'block';
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                }
+                chatInput.value = '';
+                document.body.requestPointerLock();
+            }
+        });
+
+        // Handle username input
+        usernameInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const newUsername = usernameInput.value.trim();
+                if (newUsername) {
+                    username = newUsername;
+                }
+                usernameInput.value = '';
+                document.body.requestPointerLock();
+            }
         });
 
     </script>
