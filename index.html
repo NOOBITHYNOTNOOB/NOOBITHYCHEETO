@@ -95,15 +95,15 @@
         document.body.appendChild(renderer.domElement);
 
         // Remove directional and ambient lights
-        // Add a sun to the scene with increased brightness and farther distance
+        // Add a sun to the scene with increased brightness and closer distance
         const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
         const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
         const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-        sun.position.set(500, 500, -500); // Farther distance
+        sun.position.set(100, 100, -100); // Closer distance
         scene.add(sun);
 
         const sunLight = new THREE.PointLight(0xFFFF00, 30, 1000); // Increased intensity of the sun (10x brighter)
-        sunLight.position.set(500, 500, -500);
+        sunLight.position.set(100, 100, -100);
         scene.add(sunLight);
 
         // Create PointerLockControls
