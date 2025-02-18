@@ -94,17 +94,20 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Remove directional and ambient lights
-        // Add a sun to the scene with white light and reduced brightness
+        // Add a sun to the scene with white light and appropriate brightness
         const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
         const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF }); // White sun
         const sun = new THREE.Mesh(sunGeometry, sunMaterial);
         sun.position.set(100, 100, -100); // Closer distance
         scene.add(sun);
 
-        const sunLight = new THREE.PointLight(0xFFFFFF, 3, 1000); // White light with reduced intensity
+        const sunLight = new THREE.DirectionalLight(0xFFFFFF, 1.5); // White light with appropriate intensity
         sunLight.position.set(100, 100, -100);
         scene.add(sunLight);
+
+        // Add ambient light to soften shadows
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
 
         // Create PointerLockControls
         const controls = new THREE.PointerLockControls(camera, document.body);
@@ -214,7 +217,7 @@
             for (let i = 0; i < roofHeight; i++) {
                 const size = 6 - i * 2; // Increased initial size for a bigger roof
                 for (let j = 0; j < size; j++) {
-                    for (let k = 0; k < size; k++) {
+                    for (let k = 0; j < size; k++) {
                         const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
                         roofCube.position.set(x + j - (size / 2 - 0.5), 4 + i, z + k - (size / 2 - 0.5));
                         house.add(roofCube);
