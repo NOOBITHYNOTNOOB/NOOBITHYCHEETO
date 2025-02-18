@@ -211,12 +211,12 @@
             base.position.set(x, 2, z);
             house.add(base);
 
-            // Create cubic pyramid roof of the house
+            // Create larger cubic pyramid roof of the house
             const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xD2B48C });
-            const roofHeight = 2;
+            const roofHeight = 3; // Increased roof height to make it bigger
 
             for (let i = 0; i < roofHeight; i++) {
-                const size = 4 - i * 2;
+                const size = 6 - i * 2; // Increased initial size for a bigger roof
                 for (let j = 0; j < size; j++) {
                     for (let k = 0; k < size; k++) {
                         const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
