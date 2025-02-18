@@ -94,21 +94,17 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Add a directional light to the scene
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(0, 10, 10).normalize();
-        scene.add(light);
-
-        // Add an ambient light to the scene
-        const ambientLight = new THREE.AmbientLight(0x404040);
-        scene.add(ambientLight);
-
-        // Add a sun to the scene
+        // Remove directional and ambient lights
+        // Add a sun to the scene with increased brightness
         const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
         const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
         const sun = new THREE.Mesh(sunGeometry, sunMaterial);
         sun.position.set(50, 50, -50);
         scene.add(sun);
+
+        const sunLight = new THREE.PointLight(0xFFFF00, 3, 100); // Increased intensity of the sun
+        sunLight.position.set(50, 50, -50);
+        scene.add(sunLight);
 
         // Create PointerLockControls
         const controls = new THREE.PointerLockControls(camera, document.body);
