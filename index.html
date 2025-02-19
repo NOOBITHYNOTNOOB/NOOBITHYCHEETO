@@ -262,7 +262,7 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false };
+        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, u: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -271,39 +271,21 @@
         const chatInput = document.getElementById('chat-input');
         const usernameInput = document.getElementById('username-input');
 
-        // Function to create rain
-        function createRain() {
-            if (Math.random() < 0.1) { // 10% chance per second
-                for (let i = 0; i < 1000; i++) {
-                    const rainGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-                    const rainMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
-                    const rainDrop = new THREE.Mesh(rainGeometry, rainMaterial);
-
-                    rainDrop.position.set(
-                        Math.random() * 100 - 50,
-                        50,
-                        Math.random() * 100 - 50
-                    );
-
-                    scene.add(rainDrop);
-
-                    // Animate the rain drop
-                    const animateRainDrop = () => {
-                        requestAnimationFrame(animateRainDrop);
-                        rainDrop.position.y -= 0.2;
-
-                        if (rainDrop.position.y <= 0.5) {
-                            scene.remove(rainDrop);
-                        }
-                    };
-
-                    animateRainDrop();
-                }
+        function addBlockAtCursor() {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2(0, 0);
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects([plane]);
+            if (intersects.length > 0) {
+                const intersect = intersects[0];
+                const blockGeometry = new THREE.BoxGeometry(1, 1, 1);
+                const blockMaterial = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff });
+                const block = new THREE.Mesh(blockGeometry, blockMaterial);
+                block.position.copy(intersect.point).add(intersect.face.normal);
+                block.position.divideScalar(1).floor().multiplyScalar(1).addScalar(0.5);
+                scene.add(block);
             }
         }
-
-        // Set an interval to create rain every second
-        setInterval(createRain, 1000);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -314,6 +296,12 @@
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
+
+            // Add block at cursor
+            if (keys['u']) {
+                addBlockAtCursor();
+                keys['u'] = false;
+            }
 
             // Open username input
             if (keys['/']) {
