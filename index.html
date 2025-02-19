@@ -273,7 +273,7 @@
 
         // Function to create rain
         function createRain() {
-            if (Math.random() < 0.25) { // 25% chance
+            if (Math.random() < 0.1) { // 10% chance per second
                 const rainGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
                 const rainMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
                 const rainDrop = new THREE.Mesh(rainGeometry, rainMaterial);
@@ -300,8 +300,8 @@
             }
         }
 
-        // Set an interval to create rain every 10 seconds
-        setInterval(createRain, 10000);
+        // Set an interval to create rain every second
+        setInterval(createRain, 1000);
 
         function animate() {
             requestAnimationFrame(animate);
