@@ -262,7 +262,7 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '1': false, '/': false, t: false };
+        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -302,25 +302,6 @@
 
         // Set an interval to create rain every 10 seconds
         setInterval(createRain, 10000);
-
-        // Function to create a red block at the crosshair position
-        function createRedBlock() {
-            const vector = new THREE.Vector3(0, 0, -5);
-            vector.applyMatrix4(camera.matrixWorld);
-
-            const redBlockGeometry = new THREE.BoxGeometry(1, 1, 1);
-            const redBlockMaterial = new THREE.MeshLambertMaterial({ color: 0xFF0000 });
-            const redBlock = new THREE.Mesh(redBlockGeometry, redBlockMaterial);
-
-            redBlock.position.set(vector.x, vector.y, vector.z);
-            scene.add(redBlock);
-        }
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === '1') {
-                createRedBlock();
-            }
-        });
 
         function animate() {
             requestAnimationFrame(animate);
