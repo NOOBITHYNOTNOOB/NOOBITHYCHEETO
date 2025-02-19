@@ -12,7 +12,7 @@
             top: 50%;
             left: 50%;
             width: 20px;
-            height: 20%;
+            height: 20px;
             margin-left: -10px;
             margin-top: -10px;
             pointer-events: none;
@@ -406,7 +406,14 @@
         window.addEventListener('mousedown', (event) => {
             if (event.button === 0) { // Left click
                 removeBlockAtCursor();
+            } else if (event.button === 2) { // Right click
+                addBlockAtCursor(0x000000); // Black color
             }
+        });
+
+        // Prevent context menu on right-click
+        window.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
         });
 
     </script>
