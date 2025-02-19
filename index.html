@@ -275,10 +275,18 @@
             createRock(rockX, rockZ);
         }
 
-        // Create one blocky house at a random position on the ground plane
-        const houseX = Math.random() * 100 - 50;
-        const houseZ = Math.random() * 100 - 50;
-        createBlockyHouse(houseX, houseZ);
+        // Create three blocky houses at random positions on the ground plane
+        const house1X = Math.random() * 100 - 50;
+        const house1Z = Math.random() * 100 - 50;
+        createBlockyHouse(house1X, house1Z);
+
+        const house2X = Math.random() * 100 - 50;
+        const house2Z = Math.random() * 100 - 50;
+        createBlockyHouse(house2X, house2Z);
+
+        const house3X = Math.random() * 100 - 50;
+        const house3Z = Math.random() * 100 - 50;
+        createBlockyHouse(house3X, house3Z);
 
         // Create another elevated blocky house with pillars
         const elevatedHouseX = Math.random() * 100 - 50;
@@ -431,15 +439,4 @@
             if (event.button === 0) { // Left click
                 removeBlockAtCursor();
             } else if (event.button === 2) { // Right click
-                addBlockAtCursor(0x000000); // Black color
-            }
-        });
-
-        // Prevent context menu on right-click
-        window.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-        });
-
-    </script>
-</body>
-</html>
+                addBlockAt
