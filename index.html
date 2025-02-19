@@ -217,7 +217,7 @@
             for (let i = 0; i < roofHeight; i++) {
                 const size = 6 - i * 2; // Increased initial size for a bigger roof
                 for (let j = 0; j < size; j++) {
-                    for (let k = 0; k < size; k++) {
+                    for (let k = 0; j < size; k++) {
                         const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
                         roofCube.position.set(x + j - (size / 2 - 0.5), 4 + i, z + k - (size / 2 - 0.5));
                         house.add(roofCube);
@@ -303,6 +303,26 @@
         // Set an interval to create rain every 10 seconds
         setInterval(createRain, 10000);
 
+        // Add collision detection
+        const objects = [plane, ...blocks];
+
+        function detectCollisions() {
+            const originPoint = controls.getObject().position.clone();
+
+            for (let vertexIndex = 0; vertexIndex < camera.geometry.vertices.length; vertexIndex++) {
+                const localVertex = camera.geometry.vertices[vertexIndex].clone();
+                const globalVertex = localVertex.applyMatrix4(camera.matrix);
+                const directionVector = globalVertex.sub(camera.position);
+
+                const ray = new THREE.Raycaster(originPoint, directionVector.normalize());
+                const collisionResults = ray.intersectObjects(objects);
+                if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+                    controls.getObject().position.copy(originPoint);
+                    break;
+                }
+            }
+        }
+
         function animate() {
             requestAnimationFrame(animate);
 
@@ -312,6 +332,8 @@
             if (keys['s']) controls.moveForward(-delta);
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
+
+            detectCollisions();
 
             // Open username input
             if (keys['/']) {
