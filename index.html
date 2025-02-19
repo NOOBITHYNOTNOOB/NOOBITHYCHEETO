@@ -219,7 +219,7 @@
                 for (let j = 0; j < size; j++) {
                     for (let k = 0; k < size; k++) {
                         const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
-                        roofCube.position.set(x + j - (size / 2 - 0.5), (elevated ? 6 : 2) + 4 + i, z + k - (size / 2 - 0.5));
+                        roofCube.position.set(x + j - (size / 2 - 0.5), (elevated ? 6 : 2) + 3 + i, z + k - (size / 2 - 0.5));
                         house.add(roofCube);
                     }
                 }
