@@ -262,7 +262,7 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false };
+        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false, '2': false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -271,7 +271,7 @@
         const chatInput = document.getElementById('chat-input');
         const usernameInput = document.getElementById('username-input');
 
-        function addBlockAtCursor() {
+        function addBlockAtCursor(color) {
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2(0, 0);
             raycaster.setFromCamera(mouse, camera);
@@ -279,7 +279,7 @@
             if (intersects.length > 0) {
                 const intersect = intersects[0];
                 const blockGeometry = new THREE.BoxGeometry(1, 1, 1);
-                const blockMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 }); // Red color
+                const blockMaterial = new THREE.MeshLambertMaterial({ color: color });
                 const block = new THREE.Mesh(blockGeometry, blockMaterial);
                 block.position.copy(intersect.point).add(intersect.face.normal);
                 block.position.divideScalar(1).floor().multiplyScalar(1).addScalar(0.5);
@@ -297,10 +297,16 @@
             if (keys['a']) controls.moveRight(-delta);
             if (keys['d']) controls.moveRight(delta);
 
-            // Add block at cursor
+            // Add red block at cursor
             if (keys['1']) {
-                addBlockAtCursor();
+                addBlockAtCursor(0xff0000); // Red color
                 keys['1'] = false;
+            }
+
+            // Add blue block at cursor
+            if (keys['2']) {
+                addBlockAtCursor(0x0000ff); // Blue color
+                keys['2'] = false;
             }
 
             // Open username input
