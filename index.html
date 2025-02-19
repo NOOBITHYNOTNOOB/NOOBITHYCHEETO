@@ -274,7 +274,7 @@
         // Function to create rain
         function createRain() {
             if (Math.random() < 0.1) { // 10% chance per second
-                for (let i = 0; i < 100; i++) {
+                for (let i = 0; i < 1000; i++) {
                     const rainGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
                     const rainMaterial = new THREE.MeshLambertMaterial({ color: 0x0000FF });
                     const rainDrop = new THREE.Mesh(rainGeometry, rainMaterial);
