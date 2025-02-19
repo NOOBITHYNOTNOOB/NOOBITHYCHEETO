@@ -200,14 +200,14 @@
         }
 
         // Function to create a blocky house at a given position
-        function createBlockyHouse(x, z) {
+        function createBlockyHouse(x, z, elevated = false) {
             const house = new THREE.Group();
 
             // Create base of the house
             const baseGeometry = new THREE.BoxGeometry(4, 4, 4);
             const baseMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
             const base = new THREE.Mesh(baseGeometry, baseMaterial);
-            base.position.set(x, 2, z);
+            base.position.set(x, elevated ? 6 : 2, z);
             house.add(base);
 
             // Create larger cubic pyramid roof of the house
@@ -219,9 +219,28 @@
                 for (let j = 0; j < size; j++) {
                     for (let k = 0; k < size; k++) {
                         const roofCube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), roofMaterial);
-                        roofCube.position.set(x + j - (size / 2 - 0.5), 4 + i, z + k - (size / 2 - 0.5));
+                        roofCube.position.set(x + j - (size / 2 - 0.5), (elevated ? 6 : 2) + 4 + i, z + k - (size / 2 - 0.5));
                         house.add(roofCube);
                     }
+                }
+            }
+
+            // Add pillars if elevated
+            if (elevated) {
+                const pillarGeometry = new THREE.BoxGeometry(1, 6, 1);
+                const pillarMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+
+                const pillarPositions = [
+                    { x: x - 1.5, z: z - 1.5 },
+                    { x: x + 1.5, z: z - 1.5 },
+                    { x: x - 1.5, z: z + 1.5 },
+                    { x: x + 1.5, z: z + 1.5 }
+                ];
+
+                for (const pos of pillarPositions) {
+                    const pillar = new THREE.Mesh(pillarGeometry, pillarMaterial);
+                    pillar.position.set(pos.x, 3, pos.z);
+                    house.add(pillar);
                 }
             }
 
@@ -260,6 +279,11 @@
         const houseX = Math.random() * 100 - 50;
         const houseZ = Math.random() * 100 - 50;
         createBlockyHouse(houseX, houseZ);
+
+        // Create another elevated blocky house with pillars
+        const elevatedHouseX = Math.random() * 100 - 50;
+        const elevatedHouseZ = Math.random() * 100 - 50;
+        createBlockyHouse(elevatedHouseX, elevatedHouseZ, true);
 
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false, '2': false, '3': false };
@@ -402,7 +426,7 @@
             }
         });
 
-        // Handle left click to remove blocks
+        // Handle left click to remove blocks and right click to add black block
         window.addEventListener('mousedown', (event) => {
             if (event.button === 0) { // Left click
                 removeBlockAtCursor();
