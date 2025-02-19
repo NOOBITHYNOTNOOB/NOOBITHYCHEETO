@@ -262,7 +262,7 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false, '2': false };
+        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false, '2': false, '3': false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -307,6 +307,12 @@
             if (keys['2']) {
                 addBlockAtCursor(0x0000ff); // Blue color
                 keys['2'] = false;
+            }
+
+            // Add green block at cursor
+            if (keys['3']) {
+                addBlockAtCursor(0x00ff00); // Green color
+                keys['3'] = false;
             }
 
             // Open username input
