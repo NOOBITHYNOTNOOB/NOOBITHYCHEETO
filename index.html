@@ -262,7 +262,7 @@
         createBlockyHouse(houseX, houseZ);
 
         // Set up the movement
-        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, u: false };
+        const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false };
         document.addEventListener('keydown', (event) => { if (keys[event.key] !== undefined) keys[event.key] = true; });
         document.addEventListener('keyup', (event) => { if (keys[event.key] !== undefined) keys[event.key] = false; });
 
@@ -298,9 +298,9 @@
             if (keys['d']) controls.moveRight(delta);
 
             // Add block at cursor
-            if (keys['u']) {
+            if (keys['1']) {
                 addBlockAtCursor();
-                keys['u'] = false;
+                keys['1'] = false;
             }
 
             // Open username input
