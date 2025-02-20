@@ -228,6 +228,45 @@
             scene.add(house);
         }
 
+        // Function to create a blocky chicken at a given position
+        function createBlockyChicken(x, z) {
+            const chicken = new THREE.Group();
+
+            // Create body
+            const bodyGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.position.set(x, 0.5, z);
+            chicken.add(body);
+
+            // Create head
+            const headGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+            const headMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+            const head = new THREE.Mesh(headGeometry, headMaterial);
+            head.position.set(x, 1, z);
+            chicken.add(head);
+
+            // Create beak
+            const beakGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+            const beakMaterial = new THREE.MeshLambertMaterial({ color: 0xFFA500 });
+            const beak = new THREE.Mesh(beakGeometry, beakMaterial);
+            beak.position.set(x, 1, z + 0.3);
+            chicken.add(beak);
+
+            // Create legs
+            const legGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.1);
+            const legMaterial = new THREE.MeshLambertMaterial({ color: 0xFFA500 });
+            const leg1 = new THREE.Mesh(legGeometry, legMaterial);
+            const leg2 = new THREE.Mesh(legGeometry, legMaterial);
+            leg1.position.set(x - 0.2, 0, z);
+            leg2.position.set(x + 0.2, 0, z);
+            chicken.add(leg1);
+            chicken.add(leg2);
+
+            scene.add(chicken);
+            return chicken;
+        }
+
         // Create ten blocky trees at random positions on the ground plane
         for (let i = 0; i < 10; i++) {
             const treeX = Math.random() * 100 - 50;
@@ -268,6 +307,26 @@
         const house3X = Math.random() * 100 - 50;
         const house3Z = Math.random() * 100 - 50;
         createBlockyHouse(house3X, house3Z);
+
+        // Create three blocky chickens at random positions on the ground plane
+        const chickens = [];
+        for (let i = 0; i < 3; i++) {
+            const chickenX = Math.random() * 100 - 50;
+            const chickenZ = Math.random() * 100 - 50;
+            chickens.push(createBlockyChicken(chickenX, chickenZ));
+        }
+
+        // Function to move chickens to random positions
+        function moveChickens() {
+            chickens.forEach(chicken => {
+                const newX = Math.random() * 100 - 50;
+                const newZ = Math.random() * 100 - 50;
+                chicken.position.set(newX, 0.5, newZ);
+            });
+        }
+
+        // Move chickens every 3 seconds
+        setInterval(moveChickens, 3000);
 
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false, '2': false, '3': false };
@@ -369,65 +428,4 @@
         });
 
         // Pointer lock change event listener
-        document.addEventListener('pointerlockchange', () => {
-            if (document.pointerLockElement === document.body) {
-                controls.enabled = true;
-                chatInput.style.display = 'none';
-                usernameInput.style.display = 'none';
-                chatInput.value = '';
-                usernameInput.value = '';
-            } else {
-                controls.enabled = false;
-            }
-        });
-
-        // Request pointer lock on click
-        document.body.addEventListener('click', () => {
-            document.body.requestPointerLock();
-        });
-
-        // Handle chat input
-        chatInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const message = chatInput.value.trim();
-                if (message) {
-                    const p = document.createElement('p');
-                    p.textContent = `${username}: ${message}`;
-                    chatbox.appendChild(p);
-                    chatbox.style.display = 'block';
-                    chatbox.scrollTop = chatbox.scrollHeight;
-                }
-                chatInput.value = '';
-                document.body.requestPointerLock();
-            }
-        });
-
-        // Handle username input
-        usernameInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const newUsername = usernameInput.value.trim();
-                if (newUsername) {
-                    username = newUsername;
-                }
-                usernameInput.value = '';
-                document.body.requestPointerLock();
-            }
-        });
-
-        // Handle left click to remove blocks and right click to add black block
-        window.addEventListener('mousedown', (event) => {
-            if (event.button === 0) { // Left click
-                removeBlockAtCursor();
-            } else if (event.button === 2) { // Right click
-                addBlockAtCursor(0x000000); // Black color
-            }
-        });
-
-        // Prevent context menu on right-click
-        window.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-        });
-
-    </script>
-</body>
-</html>
+        document.addEventListener('pointerlockchange', () =>
