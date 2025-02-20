@@ -213,7 +213,6 @@
             // Create larger cubic pyramid roof of the house
             const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xD2B48C });
             const roofHeight = 3; // Increased roof height to make it bigger
-
             for (let i = 0; i < roofHeight; i++) {
                 const size = 6 - i * 2; // Increased initial size for a bigger roof
                 for (let j = 0; j < size; j++) {
@@ -228,43 +227,42 @@
             scene.add(house);
         }
 
-        // Function to create a blocky chicken at a given position
-        function createBlockyChicken(x, z) {
-            const chicken = new THREE.Group();
+        // Function to create a blocky pig at a given position
+        function createBlockyPig(x, z) {
+            const pig = new THREE.Group();
 
             // Create body
-            const bodyGeometry = new THREE.BoxGeometry(1, 1, 1);
-            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+            const bodyGeometry = new THREE.BoxGeometry(1.5, 1, 1);
+            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xFFC0CB }); // Pink color
             const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
             body.position.set(x, 0.5, z);
-            chicken.add(body);
+            pig.add(body);
 
             // Create head
-            const headGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-            const headMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+            const headGeometry = new THREE.BoxGeometry(0.75, 0.75, 0.75);
+            const headMaterial = new THREE.MeshLambertMaterial({ color: 0xFFC0CB }); // Pink color
             const head = new THREE.Mesh(headGeometry, headMaterial);
-            head.position.set(x, 1, z);
-            chicken.add(head);
-
-            // Create beak
-            const beakGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-            const beakMaterial = new THREE.MeshLambertMaterial({ color: 0xFFA500 });
-            const beak = new THREE.Mesh(beakGeometry, beakMaterial);
-            beak.position.set(x, 1, z + 0.3);
-            chicken.add(beak);
+            head.position.set(x, 1, z + 0.75);
+            pig.add(head);
 
             // Create legs
-            const legGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.1);
-            const legMaterial = new THREE.MeshLambertMaterial({ color: 0xFFA500 });
+            const legGeometry = new THREE.BoxGeometry(0.25, 0.5, 0.25);
+            const legMaterial = new THREE.MeshLambertMaterial({ color: 0xFFC0CB }); // Pink color
             const leg1 = new THREE.Mesh(legGeometry, legMaterial);
             const leg2 = new THREE.Mesh(legGeometry, legMaterial);
-            leg1.position.set(x - 0.2, 0, z);
-            leg2.position.set(x + 0.2, 0, z);
-            chicken.add(leg1);
-            chicken.add(leg2);
+            const leg3 = new THREE.Mesh(legGeometry, legMaterial);
+            const leg4 = new THREE.Mesh(legGeometry, legMaterial);
+            leg1.position.set(x - 0.5, 0, z - 0.25);
+            leg2.position.set(x + 0.5, 0, z - 0.25);
+            leg3.position.set(x - 0.5, 0, z + 0.25);
+            leg4.position.set(x + 0.5, 0, z + 0.25);
+            pig.add(leg1);
+            pig.add(leg2);
+            pig.add(leg3);
+            pig.add(leg4);
 
-            scene.add(chicken);
-            return chicken;
+            scene.add(pig);
+            return pig;
         }
 
         // Create ten blocky trees at random positions on the ground plane
@@ -308,25 +306,25 @@
         const house3Z = Math.random() * 100 - 50;
         createBlockyHouse(house3X, house3Z);
 
-        // Create three blocky chickens at random positions on the ground plane
-        const chickens = [];
+        // Create three blocky pigs at random positions on the ground plane
+        const pigs = [];
         for (let i = 0; i < 3; i++) {
-            const chickenX = Math.random() * 100 - 50;
-            const chickenZ = Math.random() * 100 - 50;
-            chickens.push(createBlockyChicken(chickenX, chickenZ));
+            const pigX = Math.random() * 100 - 50;
+            const pigZ = Math.random() * 100 - 50;
+            pigs.push(createBlockyPig(pigX, pigZ));
         }
 
-        // Function to move chickens to random positions
-        function moveChickens() {
-            chickens.forEach(chicken => {
+        // Function to move pigs to random positions
+        function movePigs() {
+            pigs.forEach(pig => {
                 const newX = Math.random() * 100 - 50;
                 const newZ = Math.random() * 100 - 50;
-                chicken.position.set(newX, 0.5, newZ);
+                pig.position.set(newX, 0.5, newZ);
             });
         }
 
-        // Move chickens every 3 seconds
-        setInterval(moveChickens, 3000);
+        // Move pigs every 3 seconds
+        setInterval(movePigs, 3000);
 
         // Set up the movement
         const keys = { w: false, a: false, s: false, d: false, '/': false, t: false, '1': false, '2': false, '3': false };
@@ -424,8 +422,4 @@
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Pointer lock change event listener
-        document.addEventListener('pointerlockchange', () =>
+            renderer.setSize(window
